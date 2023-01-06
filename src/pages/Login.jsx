@@ -48,7 +48,7 @@ export default function Login() {
             <div className="container flex column">
               <input
                 type="email"
-                placeholder="email Address"
+                placeholder="enter email"
                 name="email"
                 value={formValues.email}
                 onChange={(e) =>

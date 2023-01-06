@@ -1,12 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import logo from "../assets/netflix.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaPowerOff, FaSearch } from "react-icons/fa";
-import {auth} from "../utils/firebase"
-import {signOut } from "firebase/auth";
-
-
+import { auth } from "../utils/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function Navbar({ isScrolled }) {
   const links = [
@@ -15,6 +13,12 @@ export default function Navbar({ isScrolled }) {
     { name: "Movies", link: "/" },
     { name: "My List", link: "/" },
   ];
+const navigate = useNavigate();
+  onAuthStateChanged(auth, (currentUser) => {
+    if (!currentUser) {
+      navigate('/login');
+  }
+  });
   const [showSearch, setShowSearch] = useState(false);
   const [inputHover, setInputHover] = useState(false);
 
@@ -26,7 +30,7 @@ export default function Navbar({ isScrolled }) {
             <img src={logo} alt="logo" />
           </div>
           <ul className="flex links">
-            {links.map(({name, link}) => {
+            {links.map(({ name, link }) => {
               return (
                 <li key={name}>
                   <Link to={link}>{name}</Link>
@@ -47,14 +51,14 @@ export default function Navbar({ isScrolled }) {
             </button>
             <input
               type="text"
-              placeholder="Search"
+              placeholder="Titles,people,genres"
               onMouseEnter={() => setInputHover(true)}
               onMouseLeave={() => setInputHover(false)}
               onBlur={() => setShowSearch(false) && setInputHover(false)}
             />
           </div>
-          <button onClick={() => signOut(auth)} >
-            <FaPowerOff/>
+          <button onClick={() => signOut(auth)}>
+            <FaPowerOff />
           </button>
         </div>
       </nav>
@@ -62,4 +66,97 @@ export default function Navbar({ isScrolled }) {
   );
 }
 
-const Container = styled.div``;
+const Container = styled.div`
+  .scrolled {
+    background-color: black;
+  }
+  nav {
+    position: sticky;
+    top: 0;
+    height: 4.2rem;
+    width: 100%;
+    justify-content: space-between;
+    position: fixed;
+    z-index: 2;
+    align-items: center;
+    padding: 0 4rem;
+    transition: 0.3s ease-in-out;
+    .left {
+      gap: 2rem;
+      .brand {
+        img {
+          height: 6rem;
+        }
+      }
+      .links {
+        list-style-type: none;
+        gap: 2rem;
+        li {
+          a {
+            color: white;
+            text-decoration: none;
+          }
+        }
+      }
+    }
+    .right {
+        gap: 1rem;
+        button {
+          background-color: transparent;
+          border: none;
+          cursor: pointer;
+          &:focus {
+            outline: none;
+          }
+          svg {
+            color: #f34242;
+            font-size: 1.2rem;
+          }
+        }
+        .search {
+          display: flex;
+          gap: 0.4rem;
+          align-items: center;
+          justify-content: center;
+          padding: 0.2rem;
+          padding-left: 0.5rem;
+          button {
+            background-color: transparent;
+            border: none;
+            &:focus {
+              outline: none;
+            }
+            svg {
+              color: white;
+              font-size: 1.2rem;
+            }
+          }
+          input {
+            width: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.2s ease-in-out;
+            background-color: transparent;
+            border: none;
+            color: white;
+            &:focus {
+              outline: none;
+            }
+          }
+        }
+        .show-search {
+          border: 1px solid white;
+          background-color: rgba(0, 0, 0, 0.6);
+          input {
+            width: 100%;
+            opacity: 1;
+            visibility: visible;
+            padding: 0.3rem;
+          }
+        }
+      }
+   
+      
+    
+  }
+`;

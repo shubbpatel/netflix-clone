@@ -51,7 +51,7 @@ export default function SignUp() {
           <div className="form">
             <input
               type="email"
-              placeholder="email Address"
+              placeholder="enter email"
               name="email"
               value={formValues.email}
               onChange={(e) =>
