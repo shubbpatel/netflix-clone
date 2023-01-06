@@ -1,15 +1,42 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import Backgroundimage from "../components/Backgroundimage";
 import Header from "../components/Header";
-
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
+import {auth} from "../utils/firebase"
 export default function SignUp() {
+  const navigate = useNavigate();
 
-const [showPassword, setShowPassword] =useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [formValues, setFormValues] = useState({
+    email: "",
+    password: "",
+  });
 
+  const handleSignIn = async () => {
+    try {
+      // const auth = getAuth();
+      const { email, password } = formValues;
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  // const auth = getAuth();
+  onAuthStateChanged(auth, (currentUser) => {
+    if(currentUser){
+      navigate('/');
+  }
+  });
 
   return (
-    <Container showPassword={showPassword} >
+    <Container showPassword={showPassword}>
       <Backgroundimage />
       <div className="content">
         <Header login />
@@ -22,19 +49,38 @@ const [showPassword, setShowPassword] =useState(false);
             </h6>
           </div>
           <div className="form">
-            <input type="email" placeholder="email Address" name="email" />
-            { showPassword && <input
-              type="password"
-              placeholder="enter password"
-              name="password"
-            /> }
-            
-            {
-              !showPassword && <button onClick={()=> setShowPassword(true)} >Get Started</button>
-            
-            }
+            <input
+              type="email"
+              placeholder="email Address"
+              name="email"
+              value={formValues.email}
+              onChange={(e) =>
+                setFormValues({
+                  ...formValues,
+                  [e.target.name]: e.target.value,
+                })
+              }
+            />
+            {showPassword && (
+              <input
+                type="password"
+                placeholder="enter password"
+                name="password"
+                value={formValues.password}
+                onChange={(e) =>
+                  setFormValues({
+                    ...formValues,
+                    [e.target.name]: e.target.value,
+                  })
+                }
+              />
+            )}
+
+            {!showPassword && (
+              <button onClick={() => setShowPassword(true)}>Get Started</button>
+            )}
           </div>
-          <button>Sign Up</button>
+          <button onClick={handleSignIn}>Sign Up</button>
         </div>
       </div>
     </Container>
@@ -65,7 +111,8 @@ const Container = styled.div`
       }
       .form {
         display: grid;
-        grid-template-columns:${({showPassword}) => showPassword? "1fr 1fr": "2fr 1fr"};
+        grid-template-columns: ${({ showPassword }) =>
+          showPassword ? "1fr 1fr" : "2fr 1fr"};
         width: 60%;
         input {
           color: black;
@@ -73,28 +120,28 @@ const Container = styled.div`
           padding: 1.5rem;
           font-size: 1.2rem;
           border: 1px solid black;
-          &:focus{
+          &:focus {
             outline: none;
           }
         }
-        button{
+        button {
           padding: 0.5rem 1rem;
-          background-color:#E50914;
+          background-color: #e50914;
           border: none;
-          cursor:pointer;
+          cursor: pointer;
           color: white;
-          font-size:1.05rem;
+          font-size: 1.05rem;
         }
-        
       }
-    }button{
+    }
+    button {
       padding: 0.5rem 1rem;
-      background-color:#E50914;
+      background-color: #e50914;
       border: none;
-      cursor:pointer;
+      cursor: pointer;
       color: white;
-      border-radius: .2rem;
-      font-size:1.05rem;
+      border-radius: 0.2rem;
+      font-size: 1.05rem;
     }
   }
 `;
