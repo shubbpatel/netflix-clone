@@ -1,18 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import BackgroundImage from "../assets/movie.jpg";
 import MoviesLogo from "../assets/netflix.png";
 import { FaPlay } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import styled from "styled-components";
+// import Player from "../components/Player";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMovies, getGenres } from "../store";
+import Slider from "../components/Slider";
 
 export default function Netflix() {
-  const [isScrolled, setIsScrolled] = useState(false);
+  const navigate = useNavigate();
 
+  const genresLoaded = useSelector((state) => state.netflix.genresLoaded);
+
+  const movies = useSelector((state) => state.netflix.movies);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getGenres());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (genresLoaded) {dispatch(fetchMovies({ type: "all" }))
+  }
+  }, [dispatch, genresLoaded]);
+  
+  const [isScrolled, setIsScrolled] = useState(false);
+  
   window.onscroll = () => {
     setIsScrolled(window.pageYOffset === 0 ? false : true);
     return () => (window.onscroll = null);
   };
+  console.log(movies);
 
   return (
     <Container>
@@ -28,7 +51,10 @@ export default function Netflix() {
             <img src={MoviesLogo} alt="Movie Logo" />
           </div>
           <div className="buttons flex">
-            <button className="flex a-center j-center">
+            <button
+              className="flex a-center j-center"
+              onClick={() => navigate("/player")}
+            >
               <FaPlay /> Play
             </button>
             <button className="flex a-center j-center">
@@ -37,6 +63,7 @@ export default function Netflix() {
           </div>
         </div>
       </div>
+      <Slider movies={movies} />
     </Container>
   );
 }
@@ -81,7 +108,7 @@ background-color: black;
           background-color: rgba(109,109,110,0.7)
           color: white;
           svg{
-            font-size: 1.8rem
+            font-size: 1.8rem;
           }
         }
       }
