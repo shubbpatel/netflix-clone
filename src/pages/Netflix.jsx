@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMovies, getGenres } from "../store";
 import Slider from "../components/Slider";
+import video from '../assets/video.mp4';
 
 export default function Netflix() {
   const navigate = useNavigate();
@@ -25,12 +26,13 @@ export default function Netflix() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (genresLoaded) {dispatch(fetchMovies({ type: "all" }))
-  }
+    if (genresLoaded) {
+      dispatch(fetchMovies({ type: "all" }));
+    }
   }, [dispatch, genresLoaded]);
-  
+
   const [isScrolled, setIsScrolled] = useState(false);
-  
+
   window.onscroll = () => {
     setIsScrolled(window.pageYOffset === 0 ? false : true);
     return () => (window.onscroll = null);
@@ -41,11 +43,12 @@ export default function Netflix() {
     <Container>
       <Navbar isScrolled={isScrolled} />
       <div className="hero">
-        <img
+        {/* <img
           src={BackgroundImage}
           alt="Background"
           className="background-image"
-        />
+        /> */}
+        <video src={video} autoPlay loop muted  className="background-image"></video>
         <div className="container">
           <div className="logo">
             <img src={MoviesLogo} alt="Movie Logo" />
@@ -69,10 +72,15 @@ export default function Netflix() {
 }
 const Container = styled.div`
 background-color: black;
+// position: absolute;
+z-index: -1;
 .hero{
-  position: relative;
+  // z-index: 90;
+  // position: relative;
+  // top:0;
   .background-image{
-    filter: brightness(40%);
+    // filter: brightness(%);
+    width: 100%;
   }
   img{
     height: 100vh;

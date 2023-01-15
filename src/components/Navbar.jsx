@@ -10,7 +10,7 @@ export default function Navbar({ isScrolled }) {
   const links = [
     { name: "Home", link: "/" },
     { name: "TV Shows", link: "/" },
-    { name: "Movies", link: "/" },
+    { name: "Movies", link: "/movies" },
     { name: "My List", link: "/" },
   ];
 const navigate = useNavigate();

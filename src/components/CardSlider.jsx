@@ -3,12 +3,22 @@ import Card from "./Card";
 import styled from "styled-components";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
-export default function CardSlider({ data, title }) {
+export default React.memo( function CardSlider({ data, title }) {
   const [showControls, setShowControls] = useState(false);
-  const [sliderPositions, setSliderPositon] = useState(0);
+  const [sliderPositions, setSliderPosition] = useState(0);
   const listRef = useRef();
 
-  const handleDirection = (direction) => {};
+  const handleDirection = (direction) => {
+    let distance = listRef.current.getBoundingClientRect().x - 70;
+    if (direction === "left" && sliderPositions > 0) {
+      listRef.current.style.transform = `translateX(${230 + distance}px)`;
+      setSliderPosition(sliderPositions - 1);
+    }
+    if (direction === "right" && sliderPositions < 4) {
+      listRef.current.style.transform = `translateX(${-230 + distance}px)`;
+      setSliderPosition(sliderPositions + 1);
+    }
+  };
 
   return (
     <Container
@@ -40,6 +50,7 @@ export default function CardSlider({ data, title }) {
     </Container>
   );
 }
+)
 
 const Container = styled.div`
 gap: 1rem;
@@ -64,16 +75,16 @@ h2{
     top: 0;
     bottom: 0;
     width: 50px;
-    transition: 0.3s ease-in-out;
+    transition: 0.7s ease-in-out;
     svg{
       font-size: 3rem;
       font-weight: bolder;
     }
     
 }
-.none{
-  display: none;
-}
+// .none{
+//   display: none;
+// }
 .left{
   left: 0;
 }

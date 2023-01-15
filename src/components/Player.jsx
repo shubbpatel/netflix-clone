@@ -41,7 +41,7 @@ const Container = styled.div`
         width: 100%;
         height: 100%;
         object-fit: cover;
-        padding: 50px;
+        // padding: 50px;
         // border: 80px solid white;
         border-radius:20px;
     }
